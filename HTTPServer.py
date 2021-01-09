@@ -21,7 +21,8 @@ class HTTPServer:
             except socket.error:
                 conn.close()
                 break               
-            if data == b"" or data == b"quit":
+
+            if data == b"" or data == b"quit\n":
                 conn.close()
                 break       
             response = self.handle_request(data)
