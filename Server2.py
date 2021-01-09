@@ -6,18 +6,7 @@ import threading
 
 class Server2(HTTPServer):
 
-    def listen(self, conn):
-        while True:
-            try:
-                data = conn.recv(1024) 
-            except socket.error:
-                conn.close()
-                break               
-            if data == "":
-                conn.close()
-                break       
-            response = self.handle_request(data)
-            conn.sendall(response)
+    
 
 
     def start(self):
@@ -28,13 +17,23 @@ class Server2(HTTPServer):
         s.listen(5)
 
         print("Listening at", s.getsockname())
+        
+        threads = []
 
-        while True:
-            conn, addr = s.accept()
-            print("Connected by", addr)
-            t = threading.Thread(target=self.listen, args=(conn,))
-            t.start()
-
+        try:
+            while True:
+                conn, addr = s.accept()
+                print("Connected by", addr)
+                t = threading.Thread(target=self.handle_single_connection, args=(conn,), daemon = True)
+                t.start()
+                threads.append(conn)
+                
+                
+        except KeyboardInterrupt:
+            s.close()
+            for conn in threads:
+                conn.close()
+            quit()
 
 if __name__ == '__main__':
     server = Server2()

@@ -1,5 +1,7 @@
+import socket
 from HTTPRequest import HTTPRequest
 
+FORMAT_STRING = "Please give operation in the correct form: num1<space>+<space>num2<space>/<space>num3.\n All other operations are invalid".encode('utf8')
 
 class HTTPServer:
     
@@ -12,11 +14,23 @@ class HTTPServer:
         404: 'Not Found',
     }
 
+    def handle_single_connection(self, conn):
+        while True:
+            try:
+                data = conn.recv(1024) 
+            except socket.error:
+                conn.close()
+                break               
+            if data == b"" or data == b"quit":
+                conn.close()
+                break       
+            response = self.handle_request(data)
+            conn.sendall(response)
+
     def start(self):
         # To be defined in server files
         return
                  
-            
 
     def handle_request(self, data):
         
@@ -25,39 +39,32 @@ class HTTPServer:
         operations = request.method.split()
 
         n = len(operations)
-        ans = int(operations[0])
+
+        if (n-1)%2 != 0:
+            return FORMAT_STRING
+
+        try:
+            ans = int(operations[0])
+        except:
+            return FORMAT_STRING
+
         i=0
-        while i < n-1:
-            if operations[i+1] == "+":
-                ans +=int(operations[i+2])
-            if operations[i+1] == "-":
-                ans -=int(operations[i+2])
-            if operations[i+1] == "*":
-                ans *=int(operations[i+2])
-            if operations[i+1] == "/":
-                ans /=int(operations[i+2])
-            i+=2
+        try:
+            while i < n-1:
+                if operations[i+1] == "+":
+                    ans +=int(operations[i+2])
+                elif operations[i+1] == "-":
+                    ans -=int(operations[i+2])
+                elif operations[i+1] == "*":
+                    ans *=int(operations[i+2])
+                elif operations[i+1] == "/":
+                    ans /=int(operations[i+2])
+                else:
+                    return FORMAT_STRING
+                i+=2
+        except :
+            return FORMAT_STRING
 
-        response_body = bytes(ans)
-        blank_line = b"\r\n"
-
-        return b"".join([b"", b"", b"", response_body])
+        return str(ans).encode('utf8')
     
-
-    def response_line(self, status_code):
-        
-        reason = self.status_codes[status_code]
-        line = "HTTP/1.1 %s %s\r\n" % (status_code, reason)
-
-        return line.encode()
-
-    def response_headers(self, extra_headers=None):
-
-        headers_copy = self.headers.copy() 
-        if extra_headers:
-            headers_copy.update(extra_headers)
-        headers = ""
-        for h in headers_copy:
-            headers += "%s: %s\r\n" % (h, headers_copy[h])
-
-        return headers.encode()
+    
