@@ -1,6 +1,7 @@
 from HTTPServer import HTTPServer
 import socket
 
+
 class Server1(HTTPServer):
     def start(self):
 
@@ -13,7 +14,6 @@ class Server1(HTTPServer):
 
                 print("Listening at", s.getsockname())
 
-            
                 conn, addr = s.accept()
                 print("Connected by", addr)
                 s.close()
