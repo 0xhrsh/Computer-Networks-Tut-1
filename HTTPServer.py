@@ -1,4 +1,3 @@
-import socket
 from HTTPRequest import HTTPRequest
 
 
@@ -14,29 +13,8 @@ class HTTPServer:
     }
 
     def start(self):
-
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        s.bind((self.host, self.port))
-        s.listen(5)
-
-        print("Listening at", s.getsockname())
-
-        while True:
-            conn, addr = s.accept()
-            print("Connected by", addr)
-
-            while True:
-                try:
-                    data = conn.recv(1024) 
-                except socket.error:
-                    conn.close()
-                    break               
-                if data is None:
-                    conn.close()
-                    break       
-                response = self.handle_request(data)
-                conn.sendall(response)
+        # To be defined in server files
+        return
                  
             
 
@@ -60,8 +38,6 @@ class HTTPServer:
                 ans /=int(operations[i+2])
             i+=2
 
-
-
         response_body = bytes(ans)
         blank_line = b"\r\n"
 
@@ -78,12 +54,9 @@ class HTTPServer:
     def response_headers(self, extra_headers=None):
 
         headers_copy = self.headers.copy() 
-
         if extra_headers:
             headers_copy.update(extra_headers)
-
         headers = ""
-
         for h in headers_copy:
             headers += "%s: %s\r\n" % (h, headers_copy[h])
 
