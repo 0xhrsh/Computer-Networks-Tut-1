@@ -1,4 +1,5 @@
 import socket
+from HTTPRequest import HTTPRequest
 
 
 class HTTPServer:
@@ -32,9 +33,28 @@ class HTTPServer:
         
         request = HTTPRequest(data) # Get a parsed HTTP request
 
-        operation = request.method
+        operations = request.method.split()
 
-        response_body = b'<h1>Server working fine!</h1>'
+        n = len(operations)
+
+        ans = int(operations[0])
+        i=0
+        while i < n-1:
+            if operations[i+1] == "+":
+                ans +=int(operations[i+2])
+            if operations[i+1] == "-":
+                ans -=int(operations[i+2])
+            if operations[i+1] == "*":
+                ans *=int(operations[i+2])
+            if operations[i+1] == "/":
+                ans /=int(operations[i+2])
+            i+=2
+
+
+
+        print(ans)
+
+        response_body = bytes(ans)
         response = response_body
 
         return response
