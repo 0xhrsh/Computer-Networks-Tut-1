@@ -4,7 +4,7 @@
 ## Intructions  
 - Running Server1  
 ```Python3 Server1.py```  
-- Running Server2
+- Running Server2  
 ```Python3 Server2.py```
 
 ## Additional Intructions:
