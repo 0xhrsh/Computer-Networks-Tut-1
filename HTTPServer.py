@@ -8,6 +8,11 @@ class HTTPServer:
         self.host = host
         self.port = port
 
+    status_codes = {
+        200: 'OK',
+        404: 'Not Found',
+    }
+
     def start(self):
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -21,22 +26,27 @@ class HTTPServer:
             conn, addr = s.accept()
             print("Connected by", addr)
 
-            data = conn.recv(1024) 
-
-            response = self.handle_request(data)
-
-            conn.sendall(response)
-            conn.close()
-
+            while True:
+                try:
+                    data = conn.recv(1024) 
+                except socket.error:
+                    conn.close()
+                    break               
+                if data is None:
+                    conn.close()
+                    break       
+                response = self.handle_request(data)
+                conn.sendall(response)
+                 
+            
 
     def handle_request(self, data):
         
-        request = HTTPRequest(data) # Get a parsed HTTP request
+        request = HTTPRequest(data)
 
         operations = request.method.split()
 
         n = len(operations)
-
         ans = int(operations[0])
         i=0
         while i < n-1:
@@ -52,11 +62,29 @@ class HTTPServer:
 
 
 
-        print(ans)
-
         response_body = bytes(ans)
-        response = response_body
+        blank_line = b"\r\n"
 
-        return response
-
+        return b"".join([b"", b"", b"", response_body])
     
+
+    def response_line(self, status_code):
+        
+        reason = self.status_codes[status_code]
+        line = "HTTP/1.1 %s %s\r\n" % (status_code, reason)
+
+        return line.encode()
+
+    def response_headers(self, extra_headers=None):
+
+        headers_copy = self.headers.copy() 
+
+        if extra_headers:
+            headers_copy.update(extra_headers)
+
+        headers = ""
+
+        for h in headers_copy:
+            headers += "%s: %s\r\n" % (h, headers_copy[h])
+
+        return headers.encode()
