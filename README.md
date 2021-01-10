@@ -6,6 +6,7 @@ by Harsh Anand (B18CSE016)
 ```Python3 server1.py```  
 - Running Server2  
 ```Python3 server2.py```
+- The client should run on IP: ```127.0.0.1``` and Port:```8888```
 
 ## Additional Intructions:
 - Both the servers perform all the activities as specified in the [Tutorial sheet](Tutorial_1.pdf)
