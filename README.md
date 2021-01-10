@@ -3,15 +3,9 @@ by Harsh Anand (B18CSE016)
 
 ## Intructions  
 - Running Server1  
-<<<<<<< HEAD
 ```python3 server1.py```  
 - Running Server2  
 ```python3 server2.py```
-=======
-```Python3 server1.py```  
-- Running Server2  
-```Python3 server2.py```
->>>>>>> 152ded61f1a00020d69a7b0151d9c9de383e1f21
 - The client should run on IP: ```127.0.0.1``` and Port:```8888```
 
 ## Additional Intructions:
