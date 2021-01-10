@@ -1,11 +1,11 @@
 # Computer-Networks-Tut-1  
-### by Harsh Anand (B18CSE016)
+by Harsh Anand (B18CSE016)
 
 ## Intructions  
 - Running Server1  
-```Python3 Server1.py```  
+```Python3 server1.py```  
 - Running Server2  
-```Python3 Server2.py```
+```Python3 server2.py```
 
 ## Additional Intructions:
 - Both the servers perform all the activities as specified in the [Tutorial sheet](Tutorial_1.pdf)
